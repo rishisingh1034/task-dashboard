@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('')
   const [advancedFilters, setAdvancedFilters] = useState<any>({})
   const [tasks, setTasks] = useState<Task[]>(mockTasks)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
 
   const filteredAndSortedTasks = useMemo(() => {
     let filtered = tasks
@@ -171,77 +172,89 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen relative overflow-hidden">
       {/* Sidebar - Hidden on mobile, shown on desktop */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block animate-slide-in-left">
         <Sidebar 
           activeItem={activeMenuItem} 
-          onItemClick={setActiveMenuItem} 
+          onItemClick={setActiveMenuItem}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden animate-fade-in">
         {/* Header */}
-        <Header
-          title={getPageTitle()}
-          onSearch={handleSearch}
-          onAddTask={handleAddTask}
-        />
+        <div className="glass-header">
+          <Header
+            title={getPageTitle()}
+            onSearch={handleSearch}
+            onAddTask={handleAddTask}
+          />
+        </div>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
-          {activeMenuItem === 'my-task' && (
-            <>
-              {/* Stats Cards */}
-              <StatsCards stats={mockStats} />
+        <main className="flex-1 overflow-y-auto p-6 custom-scrollbar relative">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {activeMenuItem === 'my-task' && (
+              <>
+                {/* Stats Cards */}
+                <div className="animate-fade-in-up">
+                  <StatsCards stats={mockStats} />
+                </div>
 
-              {/* Task Filters */}
-              <EnhancedTaskFilters
-                activeFilter={activeFilter}
-                onFilterChange={setActiveFilter}
-                taskCounts={taskCounts}
-                onAdvancedFilter={handleAdvancedFilter}
-              />
+                {/* Task Filters */}
+                <div className="animate-fade-in-up animate-delay-100">
+                  <EnhancedTaskFilters
+                    activeFilter={activeFilter}
+                    onFilterChange={setActiveFilter}
+                    taskCounts={taskCounts}
+                    onAdvancedFilter={handleAdvancedFilter}
+                  />
+                </div>
 
-              {/* Task Table */}
-              <TaskTable
-                tasks={filteredAndSortedTasks}
-                onTaskClick={handleTaskClick}
-                onTaskSelect={handleTaskSelect}
-                selectedTasks={selectedTasks}
-                sortField={sortField}
-                sortOrder={sortOrder}
-                onSort={handleSort}
-                onStatusChange={handleStatusChange}
-                onPriorityChange={handlePriorityChange}
-              />
-            </>
-          )}
+                {/* Task Table */}
+                <div className="animate-fade-in-up animate-delay-200">
+                  <TaskTable
+                    tasks={filteredAndSortedTasks}
+                    onTaskClick={handleTaskClick}
+                    onTaskSelect={handleTaskSelect}
+                    selectedTasks={selectedTasks}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={handleSort}
+                    onStatusChange={handleStatusChange}
+                    onPriorityChange={handlePriorityChange}
+                  />
+                </div>
+              </>
+            )}
 
-          {activeMenuItem === 'my-inbox' && (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
-                My Inbox - Coming Soon
-              </p>
-            </div>
-          )}
+            {activeMenuItem === 'my-inbox' && (
+              <div className="glass-card rounded-2xl p-8 flex items-center justify-center h-64 animate-fade-in">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  My Inbox - Coming Soon
+                </p>
+              </div>
+            )}
 
-          {activeMenuItem === 'dashboard' && (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
-                Dashboard Analytics - Coming Soon
-              </p>
-            </div>
-          )}
+            {activeMenuItem === 'dashboard' && (
+              <div className="glass-card rounded-2xl p-8 flex items-center justify-center h-64 animate-fade-in">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  Dashboard Analytics - Coming Soon
+                </p>
+              </div>
+            )}
 
-          {!['my-task', 'my-inbox', 'dashboard'].includes(activeMenuItem) && (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
-                {activeMenuItem.charAt(0).toUpperCase() + activeMenuItem.slice(1).replace('-', ' ')} - Coming Soon
-              </p>
-            </div>
-          )}
+            {!['my-task', 'my-inbox', 'dashboard'].includes(activeMenuItem) && (
+              <div className="glass-card rounded-2xl p-8 flex items-center justify-center h-64 animate-fade-in">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  {activeMenuItem.charAt(0).toUpperCase() + activeMenuItem.slice(1).replace('-', ' ')} - Coming Soon
+                </p>
+              </div>
+            )}
+          </div>
         </main>
       </div>
 

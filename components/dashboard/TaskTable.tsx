@@ -5,7 +5,7 @@ import { MoreVertical, ChevronDown, ChevronUp, Check } from 'lucide-react'
 import { Menu, Transition } from '@headlessui/react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Task, SortField, SortOrder } from '@/types'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
 interface TaskTableProps {
   tasks: Task[]
@@ -23,18 +23,18 @@ const statusOptions: Task['status'][] = ['Pending', 'In Progress', 'Completed', 
 const priorityOptions: Task['priority'][] = ['Low', 'Medium', 'High', 'Critical']
 
 const statusColors = {
-  'Pending': 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-amber-200 dark:border-amber-800',
-  'In Progress': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800',
-  'Overdue': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800',
-  'Completed': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800',
-  'Cancelled': 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border-gray-200 dark:border-gray-800'
+  'Pending': 'bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-700 dark:text-amber-300 border border-amber-500/30',
+  'In Progress': 'bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-700 dark:text-blue-300 border border-blue-500/30',
+  'Overdue': 'bg-gradient-to-r from-red-500/20 to-red-600/20 text-red-700 dark:text-red-300 border border-red-500/30',
+  'Completed': 'bg-gradient-to-r from-green-500/20 to-green-600/20 text-green-700 dark:text-green-300 border border-green-500/30',
+  'Cancelled': 'bg-gradient-to-r from-gray-500/20 to-gray-600/20 text-gray-700 dark:text-gray-300 border border-gray-500/30'
 }
 
 const priorityColors = {
-  'Low': 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300 border-slate-200 dark:border-slate-800',
-  'Medium': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
-  'High': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200 dark:border-orange-800',
-  'Critical': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800'
+  'Low': 'bg-gradient-to-r from-slate-500/20 to-slate-600/20 text-slate-700 dark:text-slate-300 border border-slate-500/30',
+  'Medium': 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 text-yellow-700 dark:text-yellow-300 border border-yellow-500/30',
+  'High': 'bg-gradient-to-r from-orange-500/20 to-orange-600/20 text-orange-700 dark:text-orange-300 border border-orange-500/30',
+  'Critical': 'bg-gradient-to-r from-red-500/20 to-red-600/20 text-red-700 dark:text-red-300 border border-red-500/30'
 }
 
 const columns = [
@@ -50,17 +50,17 @@ const columns = [
 ]
 
 // Status Dropdown Component
-const StatusDropdown = ({ 
-  currentStatus, 
-  onStatusChange, 
-  taskId 
-}: { 
+const StatusDropdown = ({
+  currentStatus,
+  onStatusChange,
+  taskId
+}: {
   currentStatus: Task['status']
   onStatusChange: (taskId: string, status: Task['status']) => void
-  taskId: string 
+  taskId: string
 }) => (
   <Menu as="div" className="relative inline-block text-left">
-    <Menu.Button className={clsx(
+    <Menu.Button className={cn(
       'inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 transition-all border min-w-[100px] justify-center',
       statusColors[currentStatus]
     )}>
@@ -86,7 +86,7 @@ const StatusDropdown = ({
                     e.stopPropagation()
                     onStatusChange(taskId, status)
                   }}
-                  className={clsx(
+                  className={cn(
                     active ? 'bg-gray-100 dark:bg-gray-700' : '',
                     'flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300'
                   )}
@@ -104,17 +104,17 @@ const StatusDropdown = ({
 )
 
 // Priority Dropdown Component
-const PriorityDropdown = ({ 
-  currentPriority, 
-  onPriorityChange, 
-  taskId 
-}: { 
+const PriorityDropdown = ({
+  currentPriority,
+  onPriorityChange,
+  taskId
+}: {
   currentPriority: Task['priority']
   onPriorityChange: (taskId: string, priority: Task['priority']) => void
-  taskId: string 
+  taskId: string
 }) => (
   <Menu as="div" className="relative inline-block text-left">
-    <Menu.Button className={clsx(
+    <Menu.Button className={cn(
       'inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 transition-all border min-w-[80px] justify-center',
       priorityColors[currentPriority]
     )}>
@@ -140,7 +140,7 @@ const PriorityDropdown = ({
                     e.stopPropagation()
                     onPriorityChange(taskId, priority)
                   }}
-                  className={clsx(
+                  className={cn(
                     active ? 'bg-gray-100 dark:bg-gray-700' : '',
                     'flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300'
                   )}
@@ -187,8 +187,8 @@ export default function TaskTable({
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null
-    return sortOrder === 'asc' ? 
-      <ChevronUp className="w-4 h-4" /> : 
+    return sortOrder === 'asc' ?
+      <ChevronUp className="w-4 h-4" /> :
       <ChevronDown className="w-4 h-4" />
   }
 

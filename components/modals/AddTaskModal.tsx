@@ -4,6 +4,7 @@ import { useState, Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { X, Plus, Calendar, User, Tag, AlertCircle } from 'lucide-react'
 import { Task } from '@/types'
+import { cn } from '@/lib/utils'
 
 interface AddTaskModalProps {
   isOpen: boolean
@@ -105,7 +106,7 @@ export default function AddTaskModal({ isOpen, onClose, onAddTask }: AddTaskModa
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -119,44 +120,46 @@ export default function AddTaskModal({ isOpen, onClose, onAddTask }: AddTaskModa
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white dark:bg-gray-900 p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl glass-modal p-8 text-left align-middle shadow-2xl transition-all border border-white/20">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                      <Plus className="w-5 h-5 text-white" />
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <Plus className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <Dialog.Title className="text-lg font-medium text-gray-900 dark:text-white">
+                      <Dialog.Title className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                         Add New Task
                       </Dialog.Title>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         Create a new task and assign it to a team member
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleClose}
-                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="p-2.5 glass-button rounded-xl hover-lift transition-all duration-300 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                   >
-                    <X className="w-5 h-5 text-gray-500" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-8">
                   {/* Customer Information */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                         Customer Name *
                       </label>
                       <input
                         type="text"
                         value={formData.customerName}
                         onChange={(e) => handleInputChange('customerName', e.target.value)}
-                        className={`w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.customerName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                          }`}
+                        className={cn(
+                          'w-full px-4 py-3 glass-button rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300',
+                          errors.customerName ? 'ring-2 ring-red-500/50' : ''
+                        )}
                         placeholder="Enter customer name"
                       />
                       {errors.customerName && (

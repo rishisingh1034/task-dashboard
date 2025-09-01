@@ -5,7 +5,7 @@ import { Filter, ChevronDown, Calendar, User, Tag, X } from 'lucide-react'
 import { Menu, Transition } from '@headlessui/react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FilterType } from '@/types'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
 interface EnhancedTaskFiltersProps {
   activeFilter: FilterType
@@ -67,9 +67,9 @@ export default function EnhancedTaskFilters({
   )
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6">
+    <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in">
       {/* Basic Filters */}
-      <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
         {filterOptions.map((option) => {
           const count = taskCounts[option.count as keyof typeof taskCounts]
           const isActive = activeFilter === option.id
@@ -78,19 +78,19 @@ export default function EnhancedTaskFilters({
             <button
               key={option.id}
               onClick={() => onFilterChange(option.id as FilterType)}
-              className={clsx(
-                'flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg border transition-colors text-sm',
+              className={cn(
+                'flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 text-sm font-medium hover-lift group',
                 isActive
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  ? 'btn-gradient-active text-white shadow-lg'
+                  : 'glass-button text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
               )}
             >
-              <span className="text-sm font-medium">{option.label}</span>
-              <span className={clsx(
-                'px-2 py-1 rounded-full text-xs font-medium',
+              <span className="font-medium">{option.label}</span>
+              <span className={cn(
+                'px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-300',
                 isActive
                   ? 'bg-white/20 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                  : 'bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 text-gray-600 dark:text-gray-400 group-hover:from-blue-100 group-hover:to-blue-200 dark:group-hover:from-blue-900 dark:group-hover:to-blue-800'
               )}>
                 {count}
               </span>
@@ -101,19 +101,20 @@ export default function EnhancedTaskFilters({
         {/* Advanced Filters Toggle */}
         <button
           onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-          className={clsx(
-            'flex items-center space-x-2 px-4 py-2 border rounded-lg transition-colors',
+          className={cn(
+            'flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium hover-lift group',
             showAdvancedFilters || hasActiveAdvancedFilters
-              ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300'
-              : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'btn-gradient-active text-white shadow-lg'
+              : 'glass-button text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
           )}
         >
           <Filter className="w-4 h-4" />
+          <span className="text-sm font-medium">More Filters</span>
           {hasActiveAdvancedFilters && (
-            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+            <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
           )}
-          <ChevronDown className={clsx(
-            'w-4 h-4 transition-transform',
+          <ChevronDown className={cn(
+            'w-4 h-4 transition-all duration-300',
             showAdvancedFilters && 'rotate-180'
           )} />
         </button>
@@ -121,7 +122,7 @@ export default function EnhancedTaskFilters({
         {hasActiveAdvancedFilters && (
           <button
             onClick={clearAdvancedFilters}
-            className="flex items-center space-x-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 glass-button rounded-xl hover-lift transition-all duration-300 hover:bg-red-50 dark:hover:bg-red-900/20"
           >
             <X className="w-4 h-4" />
             <span>Clear Filters</span>

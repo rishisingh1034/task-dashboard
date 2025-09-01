@@ -3,7 +3,7 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { X, Bell, CheckCircle, AlertTriangle, Info, Clock } from 'lucide-react'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
 interface Notification {
   id: string
@@ -76,12 +76,12 @@ const getNotificationIcon = (type: string) => {
 }
 
 const getNotificationBg = (type: string, read: boolean) => {
-  const baseClasses = read ? 'bg-white dark:bg-gray-800' : 'bg-blue-50 dark:bg-blue-900/20'
-  return clsx(baseClasses, 'border-l-4', {
+  const baseClasses = read ? 'glass-button' : 'glass-card bg-gradient-to-r from-indigo-500/10 to-purple-500/10'
+  return cn(baseClasses, 'border-l-4', {
     'border-green-500': type === 'success',
     'border-yellow-500': type === 'warning',
     'border-red-500': type === 'error',
-    'border-blue-500': type === 'info'
+    'border-indigo-500': type === 'info'
   })
 }
 
@@ -118,27 +118,29 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-start justify-center p-4 pt-16">
+          <div className="flex min-h-full items-start justify-end p-4 pt-16 pr-6">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95 translate-y-4"
-              enterTo="opacity-100 scale-100 translate-y-0"
+              enterFrom="opacity-0 scale-95 translate-y-4 translate-x-4"
+              enterTo="opacity-100 scale-100 translate-y-0 translate-x-0"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100 translate-y-0"
-              leaveTo="opacity-0 scale-95 translate-y-4"
+              leaveFrom="opacity-100 scale-100 translate-y-0 translate-x-0"
+              leaveTo="opacity-0 scale-95 translate-y-4 translate-x-4"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-900 shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl glass-notification shadow-2xl transition-all border border-white/20 dark:border-white/10">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between p-6 border-b border-white/10 dark:border-white/5">
                   <div className="flex items-center space-x-3">
-                    <Bell className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+                    <div className="p-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg">
+                      <Bell className="w-5 h-5 text-white" />
+                    </div>
                     <div>
-                      <Dialog.Title className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <Dialog.Title className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                         Notifications
                       </Dialog.Title>
                       {unreadCount > 0 && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
                         </p>
                       )}
@@ -146,21 +148,21 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                   </div>
                   <button
                     onClick={onClose}
-                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="p-2.5 glass-button rounded-xl hover-lift transition-all duration-300 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                   >
-                    <X className="w-5 h-5 text-gray-500" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {/* Notifications List */}
-                <div className="max-h-96 overflow-y-auto">
+                <div className="max-h-96 overflow-y-auto custom-scrollbar">
                   {mockNotifications.length > 0 ? (
-                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                    <div className="divide-y divide-white/10 dark:divide-white/5">
                       {mockNotifications.map((notification) => (
                         <div
                           key={notification.id}
-                          className={clsx(
-                            'p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer',
+                          className={cn(
+                            'p-5 hover-lift transition-all duration-300 cursor-pointer rounded-xl mx-3 my-2',
                             getNotificationBg(notification.type, notification.read)
                           )}
                         >
@@ -170,7 +172,7 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between">
-                                <p className={clsx(
+                                <p className={cn(
                                   'text-sm font-medium',
                                   notification.read 
                                     ? 'text-gray-700 dark:text-gray-300' 
@@ -189,7 +191,7 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                                 {notification.message}
                               </p>
                               {!notification.read && (
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-2 shadow-lg"></div>
                               )}
                             </div>
                           </div>
@@ -198,8 +200,10 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                     </div>
                   ) : (
                     <div className="p-8 text-center">
-                      <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500 dark:text-gray-400">
+                      <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 glass-card mx-auto w-fit mb-4">
+                        <Bell className="w-12 h-12 text-gray-400" />
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-400">
                         No notifications yet
                       </p>
                     </div>
@@ -208,12 +212,12 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
 
                 {/* Footer */}
                 {mockNotifications.length > 0 && (
-                  <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex justify-between">
-                      <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                  <div className="p-4 border-t border-white/10 dark:border-white/5">
+                    <div className="flex justify-between gap-3">
+                      <button className="px-4 py-2 glass-button rounded-xl text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover-lift transition-all duration-300">
                         Mark all as read
                       </button>
-                      <button className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                      <button className="px-4 py-2 glass-button rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-all duration-300">
                         View all
                       </button>
                     </div>
